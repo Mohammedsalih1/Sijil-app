@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "سِجِل"
+version = "1.0.0"
+id = "artifacts/sijil"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23061
+
+[services.development]
+run = "pnpm --filter @workspace/sijil run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sijil", "run", "build" ]
+publicDir = "artifacts/sijil/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23061"
+BASE_PATH = "/"
