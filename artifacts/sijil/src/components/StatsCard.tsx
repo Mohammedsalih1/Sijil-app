@@ -1,4 +1,4 @@
-import { formatAmountAr } from "../utils/dateHelpers";
+import { formatAmount } from "../utils/dateHelpers";
 
 interface StatsCardProps {
   todayCount: number;
@@ -80,13 +80,13 @@ export default function StatsCard({ todayCount, todayTotal }: StatsCardProps) {
             className="text-2xl font-black text-white leading-tight"
             style={{ fontFamily: "'Cairo', sans-serif" }}
           >
-            {formatAmountAr(todayTotal)}
+            {formatAmount(todayTotal)}
           </p>
           <p
             className="text-xs mt-0.5"
             style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}
           >
-            ريال سعودي
+            جنيه سوداني
           </p>
         </div>
       </div>

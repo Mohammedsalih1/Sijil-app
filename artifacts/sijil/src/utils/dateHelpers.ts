@@ -22,8 +22,8 @@ export function formatTimeAr(isoTime: string): string {
   return `${hour}:${min} ${period}`;
 }
 
-export function formatAmountAr(amount: number): string {
-  return amount.toLocaleString("ar-SA", {
+export function formatAmount(amount: number): string {
+  return amount.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });

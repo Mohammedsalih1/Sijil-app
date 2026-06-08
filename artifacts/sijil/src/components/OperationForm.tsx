@@ -96,9 +96,11 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
               </label>
               <input
                 type="text"
+                inputMode="numeric"
                 value={operationNumber}
                 onChange={(e) => {
-                  setOperationNumber(e.target.value);
+                  const onlyDigits = e.target.value.replace(/\D/g, "");
+                  setOperationNumber(onlyDigits);
                   setErrors((prev) => ({ ...prev, operationNumber: undefined }));
                 }}
                 placeholder="مثال: 123456789"
@@ -108,7 +110,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                   border: errors.operationNumber ? "2px solid #EF4444" : "2px solid #E2E8F0",
                   background: "#F8FAFC",
                   color: "#0F172A",
-                  direction: "rtl",
+                  direction: "ltr",
+                  textAlign: "right",
                 }}
                 onFocus={(e) => {
                   if (!errors.operationNumber) e.target.style.border = "2px solid #3B82F6";
@@ -130,7 +133,7 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                 className="block text-sm font-semibold mb-2"
                 style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
               >
-                المبلغ (ريال سعودي)
+                المبلغ (جنيه سوداني)
                 <span style={{ color: "#EF4444" }}> *</span>
               </label>
               <div className="relative">
@@ -165,7 +168,7 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold"
                   style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
                 >
-                  ر.س
+                  SDG
                 </span>
               </div>
               {errors.amount && (

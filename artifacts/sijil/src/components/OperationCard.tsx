@@ -1,5 +1,5 @@
 import { Operation } from "../types";
-import { formatDateAr, formatTimeAr, formatAmountAr } from "../utils/dateHelpers";
+import { formatDateAr, formatTimeAr, formatAmount } from "../utils/dateHelpers";
 
 interface OperationCardProps {
   operation: Operation;
@@ -58,13 +58,13 @@ export default function OperationCard({ operation, onEdit, onDelete }: Operation
                   className="text-xl font-black"
                   style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}
                 >
-                  {formatAmountAr(operation.amount)}
+                  {formatAmount(operation.amount)}
                 </span>
                 <span
                   className="text-xs font-semibold"
                   style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}
                 >
-                  ر.س
+                  SDG
                 </span>
               </div>
             </div>
