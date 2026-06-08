@@ -48,76 +48,124 @@ export default function Welcome({ onDone }: Props) {
 
       <div className="flex-1 flex flex-col justify-center px-6 -mt-8">
         <div
-          className="rounded-3xl p-7 shadow-lg animate-fade-in"
+          className="rounded-3xl shadow-lg animate-fade-in overflow-hidden"
           style={{ background: "#fff", border: "1px solid #E2E8F0" }}
         >
-          <h2
-            className="text-2xl font-bold mb-1"
-            style={{ color: "#0F172A", fontFamily: "'Cairo', sans-serif" }}
+          <div
+            className="px-5 py-4"
+            style={{ background: "linear-gradient(135deg, #EFF6FF, #DBEAFE)", borderBottom: "1px solid #BFDBFE" }}
           >
-            مرحباً بك 👋
-          </h2>
-          <p
-            className="text-base mb-7"
-            style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
-          >
-            أدخل اسم محلك لنبدأ التسجيل
-          </p>
-
-          <div className="flex flex-col gap-5">
-            <div>
-              <label
-                className="block text-sm font-semibold mb-2"
-                style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
+            <div className="flex items-start gap-3">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ background: "#1E3A8A" }}
               >
-                اسم المحل أو اسمك
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setError("");
-                }}
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                placeholder="مثال: بقالة الأمين"
-                className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all"
-                style={{
-                  fontFamily: "'Cairo', sans-serif",
-                  border: error ? "2px solid #EF4444" : "2px solid #E2E8F0",
-                  background: "#F8FAFC",
-                  color: "#0F172A",
-                  direction: "rtl",
-                }}
-                onFocus={(e) => {
-                  if (!error) e.target.style.border = "2px solid #3B82F6";
-                }}
-                onBlur={(e) => {
-                  if (!error) e.target.style.border = "2px solid #E2E8F0";
-                }}
-                autoFocus
-              />
-              {error && (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div>
                 <p
-                  className="mt-2 text-sm"
-                  style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}
+                  className="text-sm font-bold mb-1"
+                  style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}
                 >
-                  {error}
+                  فترة تجريبية مجانية
                 </p>
-              )}
+                <p
+                  className="text-xs leading-relaxed"
+                  style={{ color: "#374151", fontFamily: "'Cairo', sans-serif", lineHeight: 1.75 }}
+                >
+                  يمكنك استخدام التطبيق مجاناً لمدة <strong>7 أيام</strong>، وبعد انتهاء الفترة التجريبية يلزم الاشتراك للاستمرار في الاستخدام.
+                </p>
+                <div
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
+                  style={{ background: "#1E3A8A" }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  <span
+                    className="text-xs font-bold text-white"
+                    style={{ fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    رسوم الاشتراك: 5000 جنيه سوداني
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <button
-              onClick={handleSubmit}
-              className="w-full py-4 rounded-xl text-base font-bold text-white transition-all active:scale-95"
-              style={{
-                background: "linear-gradient(135deg, #1E3A8A, #2563EB)",
-                fontFamily: "'Cairo', sans-serif",
-                boxShadow: "0 4px 14px rgba(30,58,138,0.3)",
-              }}
+          <div className="p-7">
+            <h2
+              className="text-2xl font-bold mb-1"
+              style={{ color: "#0F172A", fontFamily: "'Cairo', sans-serif" }}
             >
-              ابدأ الآن
-            </button>
+              مرحباً بك 👋
+            </h2>
+            <p
+              className="text-base mb-7"
+              style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
+            >
+              أدخل اسم محلك لنبدأ التسجيل
+            </p>
+
+            <div className="flex flex-col gap-5">
+              <div>
+                <label
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
+                >
+                  اسم المحل أو اسمك
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setError("");
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                  placeholder="مثال: بقالة الأمين"
+                  className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all"
+                  style={{
+                    fontFamily: "'Cairo', sans-serif",
+                    border: error ? "2px solid #EF4444" : "2px solid #E2E8F0",
+                    background: "#F8FAFC",
+                    color: "#0F172A",
+                    direction: "rtl",
+                  }}
+                  onFocus={(e) => {
+                    if (!error) e.target.style.border = "2px solid #3B82F6";
+                  }}
+                  onBlur={(e) => {
+                    if (!error) e.target.style.border = "2px solid #E2E8F0";
+                  }}
+                  autoFocus
+                />
+                {error && (
+                  <p
+                    className="mt-2 text-sm"
+                    style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    {error}
+                  </p>
+                )}
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                className="w-full py-4 rounded-xl text-base font-bold text-white transition-all active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, #1E3A8A, #2563EB)",
+                  fontFamily: "'Cairo', sans-serif",
+                  boxShadow: "0 4px 14px rgba(30,58,138,0.3)",
+                }}
+              >
+                ابدأ الآن
+              </button>
+            </div>
           </div>
         </div>
 
