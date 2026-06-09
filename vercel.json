@@ -1,0 +1,10 @@
+{
+  "buildCommand": "pnpm --filter @workspace/sijil run build",
+  "outputDirectory": "artifacts/sijil/dist/public",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "env": {
+    "NODE_ENV": "production",
+    "BASE_PATH": "/"
+  }
+}
