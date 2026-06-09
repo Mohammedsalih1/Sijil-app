@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { isValidCode } from "../data/activationCodes";
+import AppLogo from "../components/AppLogo";
 
 interface Props {
   onActivated: () => void;
@@ -20,10 +21,7 @@ export default function Activation({ onActivated }: Props) {
   }, []);
 
   const handleActivate = () => {
-    if (!code.trim()) {
-      setError("يرجى إدخال كود التفعيل");
-      return;
-    }
+    if (!code.trim()) { setError("يرجى إدخال كود التفعيل"); return; }
     if (isValidCode(code)) {
       localStorage.setItem("sijil_activated", "true");
       setSuccess(true);
@@ -50,19 +48,7 @@ export default function Activation({ onActivated }: Props) {
             transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)",
           }}
         >
-          <div
-            className="w-18 h-18 rounded-3xl flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.15)", width: 72, height: 72 }}
-          >
-            <svg width="40" height="40" viewBox="0 0 52 52" fill="none">
-              <rect x="6" y="8" width="30" height="36" rx="4" fill="white" fillOpacity="0.9"/>
-              <rect x="10" y="15" width="18" height="2.5" rx="1.25" fill="#1E3A8A"/>
-              <rect x="10" y="21" width="14" height="2.5" rx="1.25" fill="#1E3A8A" fillOpacity="0.6"/>
-              <rect x="10" y="27" width="16" height="2.5" rx="1.25" fill="#1E3A8A" fillOpacity="0.6"/>
-              <circle cx="38" cy="36" r="10" fill="#10B981"/>
-              <path d="M33.5 36.2l3 3 6-6" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <AppLogo size={72} rounded="20px" />
           <h1
             className="text-4xl font-black text-white"
             style={{ fontFamily: "'Cairo', sans-serif" }}
@@ -112,44 +98,25 @@ export default function Activation({ onActivated }: Props) {
           style={{ background: "#fff", border: "1.5px solid #E2E8F0", boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "#EFF6FF" }}
-            >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "#EFF6FF" }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
             </div>
             <div>
-              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
-                رسوم الاشتراك
-              </p>
-              <p className="text-xl font-black" style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}>
-                5,000 جنيه سوداني
-              </p>
+              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>رسوم الاشتراك</p>
+              <p className="text-xl font-black" style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}>5,000 جنيه سوداني</p>
             </div>
           </div>
-
-          <div
-            className="rounded-xl px-4 py-3"
-            style={{ background: "#F0FDF4", border: "1px solid #BBF7D0" }}
-          >
+          <div className="rounded-xl px-4 py-3" style={{ background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
             <div className="flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span className="text-xs font-semibold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>
-                استخدام غير محدود بعد التفعيل
-              </span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span className="text-xs font-semibold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>استخدام غير محدود بعد التفعيل</span>
             </div>
             <div className="flex items-center gap-2 mt-1.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span className="text-xs font-semibold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>
-                جميع بياناتك محفوظة وستعود بعد التفعيل
-              </span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span className="text-xs font-semibold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>جميع بياناتك محفوظة وستعود بعد التفعيل</span>
             </div>
           </div>
         </div>
@@ -176,29 +143,19 @@ export default function Activation({ onActivated }: Props) {
           className="rounded-2xl p-5"
           style={{ background: "#fff", border: "1.5px solid #E2E8F0", boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
         >
-          <p
-            className="text-sm font-bold mb-3"
-            style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
-          >
+          <p className="text-sm font-bold mb-3" style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}>
             لديك كود تفعيل؟
           </p>
 
           {success ? (
-            <div
-              className="rounded-xl py-4 flex flex-col items-center gap-2"
-              style={{ background: "#F0FDF4", border: "1.5px solid #BBF7D0" }}
-            >
+            <div className="rounded-xl py-4 flex flex-col items-center gap-2" style={{ background: "#F0FDF4", border: "1.5px solid #BBF7D0" }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#10B981" }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
               </div>
-              <p className="text-base font-bold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>
-                شكراً لاشتراكك في سِجِل
-              </p>
-              <p className="text-xs" style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}>
-                جاري فتح التطبيق...
-              </p>
+              <p className="text-base font-bold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>شكراً لاشتراكك في سِجِل</p>
+              <p className="text-xs" style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}>جاري فتح التطبيق...</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -206,15 +163,11 @@ export default function Activation({ onActivated }: Props) {
                 type="text"
                 inputMode="numeric"
                 value={code}
-                onChange={(e) => {
-                  const digits = e.target.value.replace(/\D/g, "").slice(0, 6);
-                  setCode(digits);
-                  setError("");
-                }}
+                onChange={(e) => { const d = e.target.value.replace(/\D/g, "").slice(0, 6); setCode(d); setError(""); }}
                 onKeyDown={(e) => e.key === "Enter" && handleActivate()}
                 placeholder="أدخل كود التفعيل (6 أرقام)"
                 maxLength={6}
-                className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all text-center tracking-widest font-bold"
+                className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all text-center font-bold"
                 style={{
                   fontFamily: "'Cairo', sans-serif",
                   border: error ? "2px solid #EF4444" : "2px solid #E2E8F0",
@@ -222,38 +175,24 @@ export default function Activation({ onActivated }: Props) {
                   color: "#0F172A",
                   letterSpacing: "0.25em",
                 }}
-                onFocus={(e) => {
-                  if (!error) e.target.style.border = "2px solid #3B82F6";
-                }}
-                onBlur={(e) => {
-                  if (!error) e.target.style.border = "2px solid #E2E8F0";
-                }}
+                onFocus={(e) => { if (!error) e.target.style.border = "2px solid #3B82F6"; }}
+                onBlur={(e) => { if (!error) e.target.style.border = "2px solid #E2E8F0"; }}
               />
               {error && (
-                <div
-                  className="flex items-center gap-2 rounded-lg px-3 py-2"
-                  style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}
-                >
+                <div className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
-                  <p className="text-sm font-semibold" style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}>
-                    {error}
-                  </p>
+                  <p className="text-sm font-semibold" style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}>{error}</p>
                 </div>
               )}
               <button
                 onClick={handleActivate}
                 className="w-full py-3.5 rounded-xl text-base font-bold text-white transition-all active:scale-95"
                 style={{
-                  background: code.length === 6
-                    ? "linear-gradient(135deg, #1E3A8A, #2563EB)"
-                    : "#CBD5E1",
+                  background: code.length === 6 ? "linear-gradient(135deg, #1E3A8A, #2563EB)" : "#CBD5E1",
                   fontFamily: "'Cairo', sans-serif",
                   boxShadow: code.length === 6 ? "0 4px 14px rgba(30,58,138,0.3)" : "none",
-                  cursor: code.length === 6 ? "pointer" : "default",
                 }}
               >
                 تفعيل الكود
@@ -262,10 +201,7 @@ export default function Activation({ onActivated }: Props) {
           )}
         </div>
 
-        <p
-          className="text-center text-xs"
-          style={{ color: "#94A3B8", fontFamily: "'Cairo', sans-serif" }}
-        >
+        <p className="text-center text-xs" style={{ color: "#94A3B8", fontFamily: "'Cairo', sans-serif" }}>
           جميع بياناتك محفوظة وآمنة على جهازك
         </p>
       </div>

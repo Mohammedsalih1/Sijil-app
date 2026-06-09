@@ -6,6 +6,8 @@ import OperationCard from "../components/OperationCard";
 import OperationForm from "../components/OperationForm";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { Toast, useToast } from "../components/Toast";
+import OfflineBanner from "../components/OfflineBanner";
+import InstallPrompt from "../components/InstallPrompt";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Operation, FilterType } from "../types";
 import { getTodayDate, getYesterdayDate, formatDateAr, generateId, getCurrentTime } from "../utils/dateHelpers";
@@ -410,6 +412,9 @@ export default function Home() {
           onClose={() => removeToast(t.id)}
         />
       ))}
+
+      <OfflineBanner />
+      <InstallPrompt />
 
       <style>{`
         @keyframes slideInRight {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AppLogo from "../components/AppLogo";
 
 interface Props {
   onDone: () => void;
@@ -27,19 +28,7 @@ export default function Welcome({ onDone }: Props) {
         style={{ background: "linear-gradient(160deg, #1E3A8A 0%, #2563EB 60%, #3B82F6 100%)" }}
       >
         <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.15)" }}
-          >
-            <svg width="36" height="36" viewBox="0 0 52 52" fill="none">
-              <rect x="6" y="8" width="30" height="36" rx="4" fill="white" fillOpacity="0.9"/>
-              <rect x="10" y="15" width="18" height="2.5" rx="1.25" fill="#1E3A8A"/>
-              <rect x="10" y="21" width="14" height="2.5" rx="1.25" fill="#1E3A8A" fillOpacity="0.6"/>
-              <rect x="10" y="27" width="16" height="2.5" rx="1.25" fill="#1E3A8A" fillOpacity="0.6"/>
-              <circle cx="38" cy="36" r="10" fill="#10B981"/>
-              <path d="M33.5 36.2l3 3 6-6" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <AppLogo size={64} rounded="18px" />
           <h1 className="text-3xl font-black text-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
             سِجِل
           </h1>
@@ -122,10 +111,7 @@ export default function Welcome({ onDone }: Props) {
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    setError("");
-                  }}
+                  onChange={(e) => { setName(e.target.value); setError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   placeholder="مثال: بقالة الأمين"
                   className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all"
@@ -136,19 +122,12 @@ export default function Welcome({ onDone }: Props) {
                     color: "#0F172A",
                     direction: "rtl",
                   }}
-                  onFocus={(e) => {
-                    if (!error) e.target.style.border = "2px solid #3B82F6";
-                  }}
-                  onBlur={(e) => {
-                    if (!error) e.target.style.border = "2px solid #E2E8F0";
-                  }}
+                  onFocus={(e) => { if (!error) e.target.style.border = "2px solid #3B82F6"; }}
+                  onBlur={(e) => { if (!error) e.target.style.border = "2px solid #E2E8F0"; }}
                   autoFocus
                 />
                 {error && (
-                  <p
-                    className="mt-2 text-sm"
-                    style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}
-                  >
+                  <p className="mt-2 text-sm" style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}>
                     {error}
                   </p>
                 )}
