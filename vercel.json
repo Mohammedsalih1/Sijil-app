@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm --filter @workspace/sijil run build",
-  "outputDirectory": "artifacts/sijil/dist/public",
+  "outputDirectory": "artifacts/sijil/dist",
   "installCommand": "pnpm install",
   "framework": null,
   "env": {
