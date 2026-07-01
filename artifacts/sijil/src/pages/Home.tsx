@@ -56,11 +56,17 @@ export default function Home() {
     [todayOps]
   );
 
-  const handleSave = (operationNumber: string, amount: number) => {
+  const handleSave = (
+    operationNumber: string,
+    amount: number,
+    extras?: { senderAccount?: string; notificationType?: import("../types").NotificationType }
+  ) => {
     if (editOp) {
       setOperations((prev) =>
         prev.map((o) =>
-          o.id === editOp.id ? { ...o, operationNumber, amount } : o
+          o.id === editOp.id
+            ? { ...o, operationNumber, amount, ...extras }
+            : o
         )
       );
       showToast("تم تعديل العملية بنجاح ✓");
@@ -72,6 +78,7 @@ export default function Home() {
         date: today,
         time: getCurrentTime(),
         createdAt: Date.now(),
+        ...extras,
       };
       setOperations((prev) => [newOp, ...prev]);
       showToast("تمت إضافة العملية بنجاح ✓");

@@ -1,4 +1,4 @@
-import { Operation } from "../types";
+import { Operation, NotificationType } from "../types";
 import { formatDateAr, formatTimeAr, formatAmount } from "../utils/dateHelpers";
 
 interface OperationCardProps {
@@ -7,7 +7,15 @@ interface OperationCardProps {
   onDelete: (op: Operation) => void;
 }
 
+const TYPE_BADGE: Record<NotificationType, { bg: string; text: string; dot: string }> = {
+  "بنكك":  { bg: "#EFF6FF", text: "#1E3A8A", dot: "#3B82F6" },
+  "فوري":  { bg: "#F5F3FF", text: "#5B21B6", dot: "#7C3AED" },
+  "أوكاش": { bg: "#FFF7ED", text: "#9A3412", dot: "#F97316" },
+};
+
 export default function OperationCard({ operation, onEdit, onDelete }: OperationCardProps) {
+  const badge = operation.notificationType ? TYPE_BADGE[operation.notificationType] : null;
+
   return (
     <div
       className="mx-4 rounded-2xl p-4 transition-all animate-fade-in"
@@ -29,77 +37,69 @@ export default function OperationCard({ operation, onEdit, onDelete }: Operation
                 <line x1="2" y1="10" x2="22" y2="10"/>
               </svg>
             </div>
-            <div className="min-w-0">
-              <p
-                className="text-xs font-medium truncate"
-                style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
-              >
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
                 رقم العملية
               </p>
-              <p
-                className="text-base font-bold truncate"
-                style={{ color: "#0F172A", fontFamily: "'Cairo', sans-serif" }}
-              >
-                {operation.operationNumber}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-base font-bold" style={{ color: "#0F172A", fontFamily: "'Cairo', sans-serif" }}>
+                  {operation.operationNumber}
+                </p>
+                {badge && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0"
+                    style={{ background: badge.bg, color: badge.text, fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: badge.dot }} />
+                    {operation.notificationType}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 mt-3">
+          {operation.senderAccount && (
+            <div className="mb-2 px-2 py-1.5 rounded-lg flex items-center gap-1.5" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <p className="text-xs font-medium truncate" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}>
+                {operation.senderAccount}
+              </p>
+            </div>
+          )}
+
+          <div className="flex items-center gap-4 mt-1">
             <div>
-              <p
-                className="text-xs font-medium"
-                style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
-              >
+              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
                 المبلغ
               </p>
               <div className="flex items-baseline gap-1">
-                <span
-                  className="text-xl font-black"
-                  style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}
-                >
+                <span className="text-xl font-black" style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}>
                   {formatAmount(operation.amount)}
                 </span>
-                <span
-                  className="text-xs font-semibold"
-                  style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}
-                >
+                <span className="text-xs font-semibold" style={{ color: "#10B981", fontFamily: "'Cairo', sans-serif" }}>
                   SDG
                 </span>
               </div>
             </div>
 
-            <div
-              className="w-px h-10"
-              style={{ background: "#E2E8F0" }}
-            />
+            <div className="w-px h-10" style={{ background: "#E2E8F0" }} />
 
             <div>
-              <p
-                className="text-xs font-medium"
-                style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
-              >
+              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
                 التاريخ
               </p>
-              <p
-                className="text-sm font-semibold"
-                style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
-              >
+              <p className="text-sm font-semibold" style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}>
                 {formatDateAr(operation.date)}
               </p>
             </div>
 
             <div>
-              <p
-                className="text-xs font-medium"
-                style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}
-              >
+              <p className="text-xs font-medium" style={{ color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
                 الوقت
               </p>
-              <p
-                className="text-sm font-semibold"
-                style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}
-              >
+              <p className="text-sm font-semibold" style={{ color: "#374151", fontFamily: "'Cairo', sans-serif" }}>
                 {formatTimeAr(operation.time)}
               </p>
             </div>
@@ -127,8 +127,7 @@ export default function OperationCard({ operation, onEdit, onDelete }: Operation
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-              <path d="M10 11v6"/>
-              <path d="M14 11v6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/>
               <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
             </svg>
           </button>
