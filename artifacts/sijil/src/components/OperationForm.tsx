@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { Operation, NotificationType } from "../types";
-import { extractBankakData, extractFauriData, extractOkashData } from "../utils/ocrExtractor";
 
 interface OperationFormProps {
   editOperation?: Operation | null;
   onSave: (
     operationNumber: string,
     amount: number,
-    extras?: { senderAccount?: string; notificationType?: NotificationType }
+    extras?: {
+      senderAccount?: string;
+      notificationType?: NotificationType;
+      date?: string;
+      time?: string;
+    }
   ) => void;
   onClose: () => void;
 }
@@ -22,48 +26,15 @@ const TYPE_COLORS: Record<NotificationType, { bg: string; text: string; border: 
   "أوكاش":  { bg: "#FFF7ED", text: "#9A3412", border: "#FED7AA", active: "#EA580C" },
 };
 
-async function preprocessImage(file: File): Promise<Blob> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const MAX_DIM = 2400;
-      const scale = Math.min(MAX_DIM / Math.max(img.width, img.height), 2.5);
-      const w = Math.round(img.width * scale);
-      const h = Math.round(img.height * scale);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d")!;
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
-
-      const imageData = ctx.getImageData(0, 0, w, h);
-      const d = imageData.data;
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
-        const c = Math.min(255, Math.max(0, (gray - 128) * 1.6 + 128));
-        d[i] = d[i + 1] = d[i + 2] = c;
-        d[i + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
-
-      canvas.toBlob(
-        (blob) => {
-          resolve(blob ?? file);
-          URL.revokeObjectURL(url);
-        },
-        "image/png"
-      );
+function toBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1]);
     };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      resolve(file);
-    };
-    img.src = url;
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
 }
 
@@ -80,10 +51,11 @@ interface FieldProps {
   highlight?: boolean;
   autoFocus?: boolean;
   maxLength?: number;
+  type?: string;
   onEnter?: () => void;
 }
 
-function Field({ label, required, value, onChange, placeholder, inputMode, ltr, hint, error, highlight, autoFocus, maxLength, onEnter }: FieldProps) {
+function Field({ label, required, value, onChange, placeholder, inputMode, ltr, hint, error, highlight, autoFocus, maxLength, type = "text", onEnter }: FieldProps) {
   const [focused, setFocused] = useState(false);
   return (
     <div>
@@ -91,7 +63,7 @@ function Field({ label, required, value, onChange, placeholder, inputMode, ltr, 
         {label}{required && <span style={{ color: "#EF4444" }}> *</span>}
       </label>
       <input
-        type="text"
+        type={type}
         inputMode={inputMode ?? "text"}
         value={value}
         onChange={e => onChange(e.target.value)}
@@ -121,13 +93,13 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
   const [operationNumber, setOperationNumber] = useState(editOperation?.operationNumber ?? "");
   const [amount, setAmount] = useState(editOperation ? String(editOperation.amount) : "");
   const [senderAccount, setSenderAccount] = useState(editOperation?.senderAccount ?? "");
+  const [opDate, setOpDate] = useState(editOperation?.date ?? "");
+  const [opTime, setOpTime] = useState(editOperation?.time ?? "");
   const [notificationType, setNotificationType] = useState<NotificationType>(
     editOperation?.notificationType ?? "بنكك"
   );
   const [errors, setErrors] = useState<{ operationNumber?: string; amount?: string }>({});
   const [ocrPhase, setOcrPhase] = useState<OcrPhase>("idle");
-  const [ocrProgress, setOcrProgress] = useState(0);
-  const [ocrStatus, setOcrStatus] = useState("");
   const [ocrFilledFields, setOcrFilledFields] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -160,72 +132,54 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
     onSave(operationNumber.trim(), parseFloat(amount), {
       senderAccount: senderAccount.trim() || undefined,
       notificationType: isNew ? notificationType : editOperation?.notificationType,
+      date: opDate.trim() || undefined,
+      time: opTime.trim() || undefined,
     });
     handleClose();
   };
 
   const runOcr = async (file: File) => {
     setOcrPhase("loading");
-    setOcrProgress(5);
-    setOcrStatus("جاري تجهيز الصورة...");
     setOcrFilledFields(false);
 
     try {
-      setOcrProgress(10);
-      const processed = await preprocessImage(file);
+      const base64 = await toBase64(file);
+      const mimeType = file.type || "image/jpeg";
 
-      setOcrStatus("جاري تحميل محرك القراءة...");
-      setOcrProgress(15);
-
-      const { createWorker } = await import("tesseract.js");
-      const worker = await createWorker("ara+eng", 1, {
-        logger: (m: { status: string; progress: number }) => {
-          if (m.status === "loading tesseract core") {
-            setOcrStatus("جاري تحميل محرك القراءة...");
-            setOcrProgress(15 + Math.round(m.progress * 15));
-          } else if (m.status === "loading language traineddata") {
-            setOcrStatus("جاري تحميل بيانات اللغة...");
-            setOcrProgress(30 + Math.round(m.progress * 35));
-          } else if (m.status === "initializing api") {
-            setOcrStatus("جاري التهيئة...");
-            setOcrProgress(65 + Math.round(m.progress * 10));
-          } else if (m.status === "recognizing text") {
-            setOcrStatus("جاري قراءة الإشعار...");
-            setOcrProgress(75 + Math.round(m.progress * 24));
-          }
-        },
+      const res = await fetch("/api/ocr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageBase64: base64,
+          mimeType,
+          notificationType,
+        }),
       });
 
-      const { data } = await worker.recognize(processed);
-      await worker.terminate();
-
-      const rawText = data.text ?? "";
-      // eslint-disable-next-line no-console
-      console.log("[OCR raw text]", rawText);
-
-      let extracted;
-      if (notificationType === "بنكك") {
-        extracted = extractBankakData(rawText);
-      } else if (notificationType === "فوري") {
-        extracted = extractFauriData(rawText);
-      } else {
-        extracted = extractOkashData(rawText);
+      if (!res.ok) {
+        setOcrPhase("error");
+        return;
       }
-      // eslint-disable-next-line no-console
-      console.log("[OCR extracted]", extracted);
+
+      const data = await res.json() as {
+        transactionNumber: string | null;
+        amount: string | null;
+        senderAccount: string | null;
+        date: string | null;
+        time: string | null;
+      };
 
       let filled = false;
-      if (extracted.operationNumber) { setOperationNumber(extracted.operationNumber); filled = true; }
-      if (extracted.amount !== undefined) { setAmount(String(extracted.amount)); filled = true; }
-      if (extracted.senderAccount) { setSenderAccount(extracted.senderAccount); filled = true; }
+      if (data.transactionNumber) { setOperationNumber(data.transactionNumber); filled = true; }
+      if (data.amount) { setAmount(data.amount); filled = true; }
+      if (data.senderAccount) { setSenderAccount(data.senderAccount); filled = true; }
+      if (data.date) { setOpDate(data.date); filled = true; }
+      if (data.time) { setOpTime(data.time); filled = true; }
 
       setOcrFilledFields(filled);
-      setOcrProgress(100);
       setOcrPhase("done");
     } catch {
       setOcrPhase("error");
-      setOcrStatus("");
-      setOcrProgress(0);
     }
   };
 
@@ -238,8 +192,6 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
 
   const resetOcr = () => {
     setOcrPhase("idle");
-    setOcrProgress(0);
-    setOcrStatus("");
     setOcrFilledFields(false);
   };
 
@@ -296,8 +248,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                 <p className="text-sm font-bold flex-1" style={{ color: "#0F172A", fontFamily: "'Cairo', sans-serif" }}>
                   استخراج من صورة إشعار
                 </p>
-                <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#E2E8F0", color: "#64748B", fontFamily: "'Cairo', sans-serif" }}>
-                  اختياري
+                <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#DBEAFE", color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}>
+                  Gemini AI
                 </span>
               </div>
 
@@ -324,32 +276,22 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                 </div>
 
                 {ocrPhase === "loading" && (
-                  <div className="rounded-xl p-4 flex flex-col gap-2.5" style={{ background: "#EFF6FF", border: "1.5px solid #BFDBFE" }}>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-4 h-4 rounded-full border-2 flex-shrink-0"
-                        style={{
-                          borderColor: "#3B82F6",
-                          borderTopColor: "transparent",
-                          animation: "spin 0.8s linear infinite",
-                        }}
-                      />
-                      <p className="text-sm font-semibold" style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}>
-                        {ocrStatus || "جاري قراءة الإشعار..."}
+                  <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: "#EFF6FF", border: "1.5px solid #BFDBFE" }}>
+                    <div
+                      className="w-5 h-5 rounded-full border-2 flex-shrink-0"
+                      style={{
+                        borderColor: "#3B82F6",
+                        borderTopColor: "transparent",
+                        animation: "spin 0.8s linear infinite",
+                      }}
+                    />
+                    <div>
+                      <p className="text-sm font-bold" style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}>
+                        جاري تحليل الإشعار...
                       </p>
-                      <span className="mr-auto text-xs font-bold" style={{ color: "#3B82F6", fontFamily: "'Cairo', sans-serif" }}>
-                        {ocrProgress}%
-                      </span>
-                    </div>
-                    <div className="w-full rounded-full overflow-hidden" style={{ background: "#BFDBFE", height: 5 }}>
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${ocrProgress}%`,
-                          background: "linear-gradient(90deg, #1E3A8A, #3B82F6)",
-                          transition: "width 0.5s ease",
-                        }}
-                      />
+                      <p className="text-xs" style={{ color: "#3B82F6", fontFamily: "'Cairo', sans-serif" }}>
+                        يقوم Gemini AI بقراءة البيانات
+                      </p>
                     </div>
                   </div>
                 )}
@@ -396,8 +338,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-bold" style={{ color: "#991B1B", fontFamily: "'Cairo', sans-serif" }}>تعذّرت قراءة الإشعار</p>
-                      <p className="text-xs" style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}>تأكد من وضوح الصورة أو أدخل البيانات يدوياً</p>
+                      <p className="text-sm font-bold" style={{ color: "#991B1B", fontFamily: "'Cairo', sans-serif" }}>تعذّر استخراج البيانات من الإشعار</p>
+                      <p className="text-xs" style={{ color: "#EF4444", fontFamily: "'Cairo', sans-serif" }}>يمكنك إدخال البيانات يدوياً</p>
                     </div>
                     <button onClick={resetOcr} className="text-xs px-2.5 py-1.5 rounded-lg flex-shrink-0" style={{ background: "#FEE2E2", color: "#991B1B", fontFamily: "'Cairo', sans-serif" }}>
                       إعادة
@@ -527,6 +469,31 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
               highlight={ocrFilledFields && !!senderAccount}
               hint="يُستخرج تلقائياً من صورة الإشعار — اختياري"
             />
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <Field
+                  label="التاريخ"
+                  value={opDate}
+                  onChange={setOpDate}
+                  placeholder="2025-06-15"
+                  ltr
+                  highlight={ocrFilledFields && !!opDate}
+                  hint="صيغة: YYYY-MM-DD"
+                />
+              </div>
+              <div className="flex-1">
+                <Field
+                  label="الوقت"
+                  value={opTime}
+                  onChange={setOpTime}
+                  placeholder="14:30"
+                  ltr
+                  highlight={ocrFilledFields && !!opTime}
+                  hint="صيغة: HH:MM"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-3 mt-6" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>

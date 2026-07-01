@@ -75,7 +75,5 @@
     "wouter": "^3.3.5",
     "zod": "catalog:"
   },
-  "dependencies": {
-    "tesseract.js": "^7.0.0"
-  }
+  "dependencies": {}
 }

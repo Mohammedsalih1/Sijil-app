@@ -59,7 +59,12 @@ export default function Home() {
   const handleSave = (
     operationNumber: string,
     amount: number,
-    extras?: { senderAccount?: string; notificationType?: import("../types").NotificationType }
+    extras?: {
+      senderAccount?: string;
+      notificationType?: import("../types").NotificationType;
+      date?: string;
+      time?: string;
+    }
   ) => {
     if (editOp) {
       setOperations((prev) =>
@@ -75,10 +80,11 @@ export default function Home() {
         id: generateId(),
         operationNumber,
         amount,
-        date: today,
-        time: getCurrentTime(),
+        date: extras?.date ?? today,
+        time: extras?.time ?? getCurrentTime(),
         createdAt: Date.now(),
-        ...extras,
+        senderAccount: extras?.senderAccount,
+        notificationType: extras?.notificationType,
       };
       setOperations((prev) => [newOp, ...prev]);
       showToast("تمت إضافة العملية بنجاح ✓");
