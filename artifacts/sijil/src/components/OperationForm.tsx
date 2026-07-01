@@ -200,6 +200,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
       await worker.terminate();
 
       const rawText = data.text ?? "";
+      // eslint-disable-next-line no-console
+      console.log("[OCR raw text]", rawText);
 
       let extracted;
       if (notificationType === "بنكك") {
@@ -209,6 +211,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
       } else {
         extracted = extractOkashData(rawText);
       }
+      // eslint-disable-next-line no-console
+      console.log("[OCR extracted]", extracted);
 
       let filled = false;
       if (extracted.operationNumber) { setOperationNumber(extracted.operationNumber); filled = true; }
