@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { createWorker } from "tesseract.js";
 import { Operation, NotificationType } from "../types";
 import { extractBankakData, extractFauriData, extractOkashData } from "../utils/ocrExtractor";
 
@@ -178,10 +177,8 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
       setOcrStatus("جاري تحميل محرك القراءة...");
       setOcrProgress(15);
 
+      const { createWorker } = await import("tesseract.js");
       const worker = await createWorker("ara+eng", 1, {
-        workerPath: `https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/worker.min.js`,
-        corePath: `https://cdn.jsdelivr.net/npm/tesseract.js-core@4`,
-        langPath: `https://tessdata.projectnaptha.com/4.0.0`,
         logger: (m: { status: string; progress: number }) => {
           if (m.status === "loading tesseract core") {
             setOcrStatus("جاري تحميل محرك القراءة...");
