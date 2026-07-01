@@ -26,15 +26,40 @@ const TYPE_COLORS: Record<NotificationType, { bg: string; text: string; border: 
   "أوكاش":  { bg: "#FFF7ED", text: "#9A3412", border: "#FED7AA", active: "#EA580C" },
 };
 
-function toBase64(file: File): Promise<string> {
+function compressAndEncode(file: File): Promise<{ base64: string; mimeType: string }> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(",")[1]);
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX = 1280;
+      const scale = Math.min(MAX / Math.max(img.width, img.height), 1);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { reject(new Error("compression failed")); return; }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result as string;
+            resolve({ base64: dataUrl.split(",")[1], mimeType: "image/jpeg" });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        },
+        "image/jpeg",
+        0.82
+      );
     };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("load failed")); };
+    img.src = url;
   });
 }
 
@@ -143,8 +168,7 @@ export default function OperationForm({ editOperation, onSave, onClose }: Operat
     setOcrFilledFields(false);
 
     try {
-      const base64 = await toBase64(file);
-      const mimeType = file.type || "image/jpeg";
+      const { base64, mimeType } = await compressAndEncode(file);
 
       const res = await fetch("/api/ocr", {
         method: "POST",
