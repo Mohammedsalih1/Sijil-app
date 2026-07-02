@@ -62,8 +62,6 @@ export default function Home() {
     extras?: {
       senderAccount?: string;
       notificationType?: import("../types").NotificationType;
-      date?: string;
-      time?: string;
     }
   ) => {
     if (editOp) {
@@ -80,8 +78,8 @@ export default function Home() {
         id: generateId(),
         operationNumber,
         amount,
-        date: extras?.date ?? today,
-        time: extras?.time ?? getCurrentTime(),
+        date: today,
+        time: getCurrentTime(),
         createdAt: Date.now(),
         senderAccount: extras?.senderAccount,
         notificationType: extras?.notificationType,
