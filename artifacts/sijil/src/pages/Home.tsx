@@ -4,6 +4,7 @@ import StatsCard from "../components/StatsCard";
 import SearchBar from "../components/SearchBar";
 import OperationCard from "../components/OperationCard";
 import OperationForm from "../components/OperationForm";
+import ExportModal from "../components/ExportModal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { Toast, useToast } from "../components/Toast";
 import OfflineBanner from "../components/OfflineBanner";
@@ -24,6 +25,7 @@ export default function Home() {
   const [deleteOp, setDeleteOp] = useState<Operation | null>(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   const { toasts, showToast, removeToast } = useToast();
 
@@ -277,6 +279,14 @@ export default function Home() {
         />
       )}
 
+      {showExport && (
+        <ExportModal
+          operations={operations}
+          shopName={shopName}
+          onClose={() => setShowExport(false)}
+        />
+      )}
+
       {deleteOp && (
         <ConfirmDialog
           title="حذف العملية"
@@ -377,6 +387,21 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
+
+                <button
+                  onClick={() => { setShowSidebar(false); setShowExport(true); }}
+                  className="w-full px-4 py-3 rounded-xl flex items-center gap-3 transition-all active:scale-95"
+                  style={{ background: "#F0FDF4", border: "1.5px solid #BBF7D0" }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#065F46" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <span className="text-sm font-bold" style={{ color: "#065F46", fontFamily: "'Cairo', sans-serif" }}>
+                    تصدير البيانات
+                  </span>
+                </button>
               </div>
             </nav>
 
