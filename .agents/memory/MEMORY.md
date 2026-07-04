@@ -1,0 +1,1 @@
+- [Sijil notification OCR](sijil-ocr.md) — Gemini-Vision reads bank notifications; /api/ocr is proxy-root not app base, 20mb limit + client compress, never log model text.
