@@ -96,7 +96,9 @@ export default async function handler(req: OcrRequest, res: OcrResponse) {
     return;
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = (
+    globalThis as { process?: { env?: Record<string, string | undefined> } }
+  ).process?.env?.GEMINI_API_KEY;
   if (!apiKey) {
     res.status(500).json({ error: "OCR service is not configured" });
     return;
