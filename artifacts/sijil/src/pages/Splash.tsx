@@ -59,6 +59,16 @@ export default function Splash() {
             />
           ))}
         </div>
+        <p
+          className="text-xs font-medium mt-1"
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            fontFamily: "'Cairo', sans-serif",
+            letterSpacing: "0.04em",
+          }}
+        >
+          Powered by <span style={{ color: "#fff", fontWeight: 800 }}>MSM Tech</span>
+        </p>
       </div>
 
       <style>{`
