@@ -7,7 +7,7 @@ import { ensureDeviceId } from "./utils/activation";
 
 type Screen = "splash" | "welcome" | "home" | "activation";
 
-const TRIAL_MINUTES = 5;
+const TRIAL_DAYS = 2;
 
 function getAccessStatus(): "active" | "expired" | "activated" {
   const expiresAt = localStorage.getItem("sijil_expires_at");
@@ -19,8 +19,8 @@ function getAccessStatus(): "active" | "expired" | "activated" {
   const trialStart = localStorage.getItem("sijil_trial_start");
   if (!trialStart) return "active";
 
-  const minutesPassed = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60);
-  return minutesPassed <= TRIAL_MINUTES ? "active" : "expired";
+  const daysPassed = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60 * 60 * 24);
+  return daysPassed <= TRIAL_DAYS ? "active" : "expired";
 }
 
 export default function App() {
