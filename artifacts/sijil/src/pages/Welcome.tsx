@@ -40,52 +40,6 @@ export default function Welcome({ onDone }: Props) {
           className="rounded-3xl shadow-lg animate-fade-in overflow-hidden"
           style={{ background: "#fff", border: "1px solid #E2E8F0" }}
         >
-          <div
-            className="px-5 py-4"
-            style={{ background: "linear-gradient(135deg, #EFF6FF, #DBEAFE)", borderBottom: "1px solid #BFDBFE" }}
-          >
-            <div className="flex items-start gap-3">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                style={{ background: "#1E3A8A" }}
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </div>
-              <div>
-                <p
-                  className="text-sm font-bold mb-1"
-                  style={{ color: "#1E3A8A", fontFamily: "'Cairo', sans-serif" }}
-                >
-                  فترة تجريبية مجانية
-                </p>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: "#374151", fontFamily: "'Cairo', sans-serif", lineHeight: 1.75 }}
-                >
-                  يمكنك استخدام التطبيق مجاناً لمدة <strong>7 أيام</strong>، وبعد انتهاء الفترة التجريبية يلزم الاشتراك للاستمرار في الاستخدام.
-                </p>
-                <div
-                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
-                  style={{ background: "#1E3A8A" }}
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="1" x2="12" y2="23"/>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                  </svg>
-                  <span
-                    className="text-xs font-bold text-white"
-                    style={{ fontFamily: "'Cairo', sans-serif" }}
-                  >
-                    رسوم الاشتراك: 5000 جنيه سوداني
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="p-7">
             <h2
               className="text-2xl font-bold mb-1"

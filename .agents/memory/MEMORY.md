@@ -1,1 +1,2 @@
 - [Sijil notification OCR](sijil-ocr.md) — Gemini-Vision reads bank notifications; /api/ocr is proxy-root not app base, 20mb limit + client compress, never log model text.
+- [Sijil activation & trial gate](sijil-activation.md) — client-side SHA-256 code (SJL-XXXX-XXXX) + LocalStorage expiry; deliberate soft lock, not real license enforcement.

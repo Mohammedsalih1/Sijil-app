@@ -245,6 +245,16 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        <div className="mt-10 mb-2 flex items-center justify-center">
+          <p
+            className="text-[11px] font-medium"
+            style={{ color: "#94A3B8", fontFamily: "'Cairo', sans-serif", letterSpacing: "0.04em" }}
+          >
+            Powered by{" "}
+            <span style={{ color: "#1E3A8A", fontWeight: 800 }}>MSM Tech</span>
+          </p>
+        </div>
       </div>
 
       <button
