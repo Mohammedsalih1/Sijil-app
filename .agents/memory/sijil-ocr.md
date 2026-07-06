@@ -15,3 +15,15 @@ Frontend (`@workspace/sijil`) posts a compressed image to `POST /api/ocr` (serve
 - `transactionLast4` is normalized to last-4-digits on BOTH server (`slice(-4)`) and client for all three notification types (بنكك/فوري/أوكاش).
 
 **UX contract:** clicking "إضافة عملية" for a NEW op opens a capture-first step (type selector + camera/gallery buttons), not the form directly. Successful OCR advances to the prefilled form for review; "أو أدخل البيانات يدوياً" skips to manual entry. Save path is the existing LocalStorage logic, unchanged.
+
+## Deployment: app is dual-target (Replit AND Vercel)
+**Decision:** the frontend must call **relative** `/api/ocr` so the SAME build works on both hosts — never hardcode an absolute API URL. The backend for that path is provided differently per host:
+- **Replit** runs the real Express `@workspace/api-server` and the shared proxy routes `/api` to it. Static frontend is served from `dist/public` (artifact.toml), so Vite `build.outDir` must stay `dist/public`.
+- **Vercel** has NO Express server — only static files + serverless functions — so `/api/ocr` 404s unless a repo-root `api/*` serverless function exists. It mirrors the Express route.
+
+**Why the OCR backend can't be skipped on Vercel:** `GEMINI_API_KEY` must stay server-side; the browser can't call Gemini directly.
+
+**Gotchas when touching Vercel deploy:**
+- Serverless deps must be in the **root** `package.json` (a root `api/*` fn can't resolve a dep installed only under `artifacts/api-server`).
+- `vercel.json` `outputDirectory` must track any change to Vite's `outDir`.
+- User must set `GEMINI_API_KEY` in the Vercel dashboard env vars themselves — it is not synced from Replit secrets.
