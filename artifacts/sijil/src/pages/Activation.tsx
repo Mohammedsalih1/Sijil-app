@@ -210,7 +210,6 @@ export default function Activation({ onActivated }: Props) {
                 value={code}
                 onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
                 onKeyDown={(e) => e.key === "Enter" && handleActivate()}
-                placeholder="SJL-XXXX-XXXX"
                 className="w-full rounded-xl px-4 py-3.5 text-base outline-none transition-all text-center font-bold"
                 style={{
                   fontFamily: "monospace",
