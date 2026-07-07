@@ -4,6 +4,7 @@ import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import Activation from "./pages/Activation";
 import { ensureDeviceId } from "./utils/activation";
+import { trackScreen } from "./utils/analytics";
 
 type Screen = "splash" | "welcome" | "home" | "activation";
 
@@ -51,6 +52,10 @@ export default function App() {
     }, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    trackScreen(screen);
+  }, [screen]);
 
   const handleWelcomeDone = () => {
     setScreen(getAccessStatus() === "expired" ? "activation" : "home");
