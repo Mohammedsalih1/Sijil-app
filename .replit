@@ -34,3 +34,8 @@ externalPort = 3000
 [[ports]]
 localPort = 23061
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+VITE_GA_MEASUREMENT_ID = "G-JQZ0N9G8L2"
