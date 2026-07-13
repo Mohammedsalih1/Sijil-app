@@ -8,7 +8,7 @@ import { trackScreen } from "./utils/analytics";
 
 type Screen = "splash" | "welcome" | "home" | "activation";
 
-const TRIAL_DAYS = 2;
+const TRIAL_DAYS = 7;
 
 function getAccessStatus(): "active" | "expired" | "activated" {
   const expiresAt = localStorage.getItem("sijil_expires_at");
