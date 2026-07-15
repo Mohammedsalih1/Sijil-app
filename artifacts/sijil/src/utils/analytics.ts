@@ -1,4 +1,4 @@
-const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || "G-CG7RD4XHD1";
 
 export function initAnalytics(): void {
   if (!GA_ID) return;
