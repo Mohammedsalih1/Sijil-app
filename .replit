@@ -38,4 +38,4 @@ externalPort = 80
 [userenv]
 
 [userenv.shared]
-VITE_GA_MEASUREMENT_ID = "G-JQZ0N9G8L2"
+VITE_GA_MEASUREMENT_ID = "G-CG7RD4XHD1"
