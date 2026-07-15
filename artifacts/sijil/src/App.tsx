@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import Splash from "./pages/Splash";
 import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
@@ -65,8 +66,28 @@ export default function App() {
     setScreen("home");
   };
 
-  if (screen === "splash") return <Splash />;
-  if (screen === "welcome") return <Welcome onDone={handleWelcomeDone} />;
-  if (screen === "activation") return <Activation onActivated={handleActivated} />;
-  return <Home />;
+  if (screen === "splash") return (
+    <>
+      <Splash />
+      <Analytics />
+    </>
+  );
+  if (screen === "welcome") return (
+    <>
+      <Welcome onDone={handleWelcomeDone} />
+      <Analytics />
+    </>
+  );
+  if (screen === "activation") return (
+    <>
+      <Activation onActivated={handleActivated} />
+      <Analytics />
+    </>
+  );
+  return (
+    <>
+      <Home />
+      <Analytics />
+    </>
+  );
 }
